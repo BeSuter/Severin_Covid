@@ -5,8 +5,6 @@ import sys
 import uuid
 import logging
 
-import sentry_sdk
-from sentry_sdk import capture_exception
 from tweepy import OAuthHandler
 from tweepy import Stream
 from tweepy.streaming import StreamListener
@@ -24,11 +22,6 @@ formatter = logging.Formatter(
 handler.setFormatter(formatter)
 
 logger.addHandler(handler)
-
-sentry_sdk.init(
-    "https://18cbe5d7f9a94285964756bd86fade44@o455312.ingest.sentry.io/5458536",
-    traces_sample_rate=1.0,
-)
 
 
 def cred_to_auth(cred):
