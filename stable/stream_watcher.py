@@ -118,7 +118,7 @@ class StdOutListener(StreamListener):
         if len(keywords) != 0:
             self.tweet_dump.append(tweet_data)
 
-        if len(self.tweet_dump) >= 100:
+        if len(self.tweet_dump) >= 10:
             self.dump_tweets()
 
         return True
