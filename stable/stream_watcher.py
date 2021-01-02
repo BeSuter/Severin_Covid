@@ -177,7 +177,7 @@ def crawl(auth, crawl_type, top_limit=-1):
     while True:
         try:
             stream = Stream(auth, listener, tweet_mode="extended")
-            stream.filter(languages=["en"], track=keywords, is_async=False)
+            stream.filter(languages=["en", "de"], track=keywords, is_async=False)
 
         except KeyboardInterrupt:
             logger.critical("[crawler] :: Keyboard interrupt - shutting down")
