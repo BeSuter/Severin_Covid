@@ -1,0 +1,11 @@
+jupyterlab
+tweepy
+apscheduler
+pandas
+pymongo
+newspaper3k
+tqdm
+sentry_sdk
+Sphinx==3.2.1
+recommonmark==0.6.0
+flashtext
