@@ -200,6 +200,5 @@ if __name__ == "__main__":
 
     cred_dict = util.get_config("./config_api.ini")
     auths = [cred_to_auth(cred) for cred in cred_dict.values()]
-    print(auths)
 
     crawl(auths[credential_num], crawl_type, top_limit=600)
