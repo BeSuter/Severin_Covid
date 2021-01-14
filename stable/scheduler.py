@@ -30,4 +30,5 @@ def db_job(topic):
 
 if __name__ == "__main__":
 
-    db_job("covid")
+    with multiprocessing.Pool(1) as p:
+        p.map(db_job, ["covid"])
