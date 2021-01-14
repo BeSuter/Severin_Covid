@@ -133,7 +133,7 @@ def periodic_db_save(topic_list=None):
     tweet_data = process_new_tweets(topic_list)
     save_new_tweets_to_db(tweet_data, api)
 
-    cleanup_snapshot_files(tweet_data)
+    #cleanup_snapshot_files(tweet_data)
 
 
 if __name__ == "__main__":
