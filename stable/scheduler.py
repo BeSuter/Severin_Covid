@@ -1,13 +1,19 @@
-import sentry_sdk
 import time
 import multiprocessing
+import logging
 
 import db_saver
 
-sentry_sdk.init(
-    "https://18cbe5d7f9a94285964756bd86fade44@o455312.ingest.sentry.io/5458536",
-    traces_sample_rate=1.0,
-)
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+
+handler = logging.StreamHandler(sys.stdout)
+formatter = logging.Formatter(
+    "%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+handler.setFormatter(formatter)
+
+logger.addHandler(handler)
 
 
 def db_job(topic):
@@ -15,12 +21,13 @@ def db_job(topic):
         start_time = time.time()
         db_saver.periodic_db_save([topic])
         end_time = time.time()
-        remaining_time = 85 - (end_time - start_time)
+        remaining_time = 900 - (end_time - start_time)
         if remaining_time > 0:
+            logger.info(f"Sleeping for {remaining_time/60.} min")
             time.sleep(remaining_time)
 
 
 if __name__ == "__main__":
 
-    with multiprocessing.Pool(3) as p:
-        p.map(db_job, ["crypto", "snp500", "election"])
+    with multiprocessing.Pool(1) as p:
+        p.map(db_job, ["covid"])
