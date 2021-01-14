@@ -66,6 +66,8 @@ def save_new_tweets_to_db(tweet_data, api):
                 tweet.get("retweeted_status", False):
                 pass
             else:
+                print(tweet)
+                sys.exit(1)
                 time_of_creation = tweet["created_at"]
                 datetime_creation = datetime.strptime(time_of_creation,
                                                       '%a %b %d %H:%M:%S +0000 %Y').replace(tzinfo=pytz.UTC)
@@ -93,7 +95,7 @@ def save_new_tweets_to_db(tweet_data, api):
                 else:
                     remaining_tweets.append(tweet)
 
-        logger.info("[crawler.StdOutListener] :: Dumping tweets")
+        logger.info("[crawler.StdOutListener] :: Saving remaining tweets")
         outpath = f"./snapshots/{topic}/"
         os.makedirs(outpath, exist_ok=True)
         dumpfile = f"{outpath}/remaining_tweets_{uuid.uuid4().hex}.p"
