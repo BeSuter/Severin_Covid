@@ -59,8 +59,9 @@ def save_new_tweets_to_db(tweet_data, api):
     for topic, tweets in tweet_data.items():
         logger.info(f"Saving all new tweets for {topic}")
         remaining_tweets = []
-        for tweet in tweets["df"]:
-            print(tweets["df"].to_dict("records"))
+        for tweet in tweets["df"].to_dict("records"):
+            print(tweet)
+            sys.exit(0)
             if tweet["in_reply_to_status_id"] or \
                 tweet["is_quote_status"] or \
                 tweet.get("quote_status", False) or \
