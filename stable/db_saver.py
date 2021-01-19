@@ -9,6 +9,7 @@ import pandas as pd
 from tweepy import OAuthHandler
 from tweepy import Cursor
 from tweepy import API
+from tweepy import TweepError
 from datetime import datetime
 from datetime import timedelta
 
@@ -73,13 +74,13 @@ def save_new_tweets_to_db(tweet_data, api):
             if tweet["in_reply_to_status_id_str"] or \
                 tweet["is_quote_status"] or \
                 retweeted_status:
-                logger.info("Passing")
-                logger.info(f"in_reply_to_status_id_str was {tweet['in_reply_to_status_id_str']}")
-                logger.info(f"is_quote_status was {tweet['is_quote_status']}")
-                logger.info(f"retweeted_status was {retweeted_status}")
+                logger.debug("Passing")
+                logger.debug(f"in_reply_to_status_id_str was {tweet['in_reply_to_status_id_str']}")
+                logger.debug(f"is_quote_status was {tweet['is_quote_status']}")
+                logger.debug(f"retweeted_status was {retweeted_status}")
                 pass
             else:
-                logger.info(f"Found a tweet")
+                logger.debug(f"Found a tweet")
                 time_of_creation = tweet["created_at"]
                 datetime_creation = datetime.strptime(time_of_creation,
                                                       '%a %b %d %H:%M:%S +0000 %Y').replace(tzinfo=pytz.UTC)
@@ -94,17 +95,21 @@ def save_new_tweets_to_db(tweet_data, api):
                         if hasattr(replie, "in_reply_to_status_id"):
                             if (replie.in_reply_to_status_id == tweet["id"]):
                                 all_replies.append(replie._json)
-                    logger.info(f"We found {len(all_replies)}/{tweet['reply_count']} replies")
-                    retweets = api.retweets(tweet["id"])
+                    logger.info(f"We found {len(all_replies)} replies")
                     first_100_retweets = []
-                    for retweet in retweets:
-                        first_100_retweets.append(retweet._json)
-                    logger.info(f"We found {len(first_100_retweets)}/{tweet['retweet_count']} retweets")
+                    try:
+                        retweets = api.retweets(tweet["id"])
+                        for retweet in retweets:
+                            first_100_retweets.append(retweet._json)
+                    except TweepError as e:
+                        logger.warning(f"TweepyError {e} ignoring")
+                    logger.info(f"We found {len(first_100_retweets)} retweets")
 
                     all_collected_info = {"original_tweet": tweet,
                                           "replies": all_replies,
                                           "retweets": first_100_retweets,
                                           "insertion_date": datetime.utcnow()}
+                    logger.debug(f"Writing to collection {topic}_tweets_test")
                     tweet_collection = util.get_db_collection(f"{topic}_tweets_test")
                     tweet_collection.insert_one(all_collected_info)
                 else:
