@@ -62,6 +62,7 @@ def save_new_tweets_to_db(tweet_data, api):
         for tweet in tweets["df"].to_dict("records"):
 
             # Ugly way of testing if is retweet... make better
+            logger.info("\nNew Tweet: ")
             try:
                 tweet["retweeted_status"]["id"]
                 logger.info(f"Retweeted_Statud Id is {tweet['retweeted_status']['id']}")
@@ -72,6 +73,9 @@ def save_new_tweets_to_db(tweet_data, api):
                 tweet["is_quote_status"] or \
                 retweeted_status:
                 logger.info("Passing")
+                logger.info(f"in_reply_to_status_id_str was {tweet['in_reply_to_status_id_str']}")
+                logger.ingo(f"is_quote_status was {tweet['is_quote_status']}")
+                logger.info(f"retweeted_status was {retweeted_status}")
                 pass
             else:
                 logger.info(f"Found a tweet")
