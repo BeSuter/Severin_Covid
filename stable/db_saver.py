@@ -10,6 +10,7 @@ from tweepy import OAuthHandler
 from tweepy import Cursor
 from tweepy import API
 from datetime import datetime
+from datetime import timedelta
 
 import util
 
@@ -82,8 +83,8 @@ def save_new_tweets_to_db(tweet_data, api):
                 time_of_creation = tweet["created_at"]
                 datetime_creation = datetime.strptime(time_of_creation,
                                                       '%a %b %d %H:%M:%S +0000 %Y').replace(tzinfo=pytz.UTC)
-                time_delta = datetime.datetime.now().replace(tzinfo=pytz.UTC) - datetime_creation
-                if time_delta.total_seconds() >= datetime.timedelta(days=5).total_seconds():
+                time_delta = datetime.now().replace(tzinfo=pytz.UTC) - datetime_creation
+                if time_delta.total_seconds() >= timedelta(days=5).total_seconds():
                     logger.info(f"Looking at tweet_id={tweet['id']}: ")
                     all_replies = []
                     for replie in Cursor(api.search,
@@ -100,7 +101,7 @@ def save_new_tweets_to_db(tweet_data, api):
                     all_collected_info = {"original_tweet": tweet,
                                           "replies": all_replies,
                                           "retweets": first_100_retweets,
-                                          "insertion_date": datetime.datetime.utcnow()}
+                                          "insertion_date": datetime.utcnow()}
                     tweet_collection = util.get_db_collection(f"{topic}_tweets")
                     tweet_collection.insert_one(all_collected_info)
                 else:
