@@ -74,7 +74,7 @@ def save_new_tweets_to_db(tweet_data, api):
                 retweeted_status:
                 logger.info("Passing")
                 logger.info(f"in_reply_to_status_id_str was {tweet['in_reply_to_status_id_str']}")
-                logger.ingo(f"is_quote_status was {tweet['is_quote_status']}")
+                logger.info(f"is_quote_status was {tweet['is_quote_status']}")
                 logger.info(f"retweeted_status was {retweeted_status}")
                 pass
             else:
