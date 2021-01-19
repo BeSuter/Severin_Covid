@@ -93,12 +93,12 @@ def save_new_tweets_to_db(tweet_data, api):
                                         timeout=999999).items(1000):
                         if hasattr(replie, "in_reply_to_status_id"):
                             if (replie.in_reply_to_status_id == tweet["id"]):
-                                all_replies.append(replie._jason)
+                                all_replies.append(replie._json)
                     logger.info(f"We found {len(all_replies)}/{tweet['reply_count']} replies")
                     retweets = api.retweets(tweet["id"])
                     first_100_retweets = []
                     for retweet in retweets:
-                        first_100_retweets.append(retweet._jason)
+                        first_100_retweets.append(retweet._json)
                     logger.info(f"We found {len(first_100_retweets)}/{tweet['retweet_count']} retweets")
 
                     all_collected_info = {"original_tweet": tweet,
