@@ -79,8 +79,6 @@ def save_new_tweets_to_db(tweet_data, api):
                 pass
             else:
                 logger.info(f"Found a tweet")
-                print(tweet)
-                sys.exit(1)
                 time_of_creation = tweet["created_at"]
                 datetime_creation = datetime.strptime(time_of_creation,
                                                       '%a %b %d %H:%M:%S +0000 %Y').replace(tzinfo=pytz.UTC)
