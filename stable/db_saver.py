@@ -60,17 +60,21 @@ def save_new_tweets_to_db(tweet_data, api):
         logger.info(f"Saving all new tweets for {topic}")
         remaining_tweets = []
         for tweet in tweets["df"].to_dict("records"):
+
             # Ugly way of testing if is retweet... make better
             try:
                 tweet["retweeted_status"]["id"]
+                logger.info(f"Retweeted_Statud Id is {tweet['retweeted_status']['id']}")
                 retweeted_status = True
             except TypeError:
                 retweeted_status = False
             if tweet["in_reply_to_status_id_str"] != "null" or \
                 tweet["is_quote_status"] or \
                 retweeted_status:
+                logger.info("Passing")
                 pass
             else:
+                logger.info(f"Found a tweet")
                 print(tweet)
                 sys.exit(1)
                 time_of_creation = tweet["created_at"]
