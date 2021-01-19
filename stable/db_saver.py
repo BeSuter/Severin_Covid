@@ -102,7 +102,7 @@ def save_new_tweets_to_db(tweet_data, api):
                                           "replies": all_replies,
                                           "retweets": first_100_retweets,
                                           "insertion_date": datetime.utcnow()}
-                    tweet_collection = util.get_db_collection(f"{topic}_tweets")
+                    tweet_collection = util.get_db_collection(f"{topic}_tweets_test")
                     tweet_collection.insert_one(all_collected_info)
                 else:
                     logger.info("Tweet did not full fill time condition")
