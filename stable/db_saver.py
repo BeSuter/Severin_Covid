@@ -87,9 +87,9 @@ def save_new_tweets_to_db(tweet_data, api):
                 if time_delta.total_seconds() >= timedelta(days=0.5).total_seconds():
                     logger.info(f"Looking at tweet_id={tweet['id']}: ")
                     all_replies = []
-                    # since_id=tweet["id"],
                     for replie in Cursor(api.search,
-                                        q="to: " + tweet["user"]["screen_name"],
+                                        q="to:" + tweet["user"]["screen_name"],
+                                        since_id=tweet["id"],
                                         timeout=999999).items(1000):
                         if hasattr(replie, "in_reply_to_status_id"):
                             if (replie.in_reply_to_status_id == tweet["id"]):
@@ -98,7 +98,7 @@ def save_new_tweets_to_db(tweet_data, api):
                     retweets = api.retweets(tweet["id"])
                     first_100_retweets = []
                     for retweet in retweets:
-                        first_100_retweets.append(retweet.to_dict("records"))
+                        first_100_retweets.append(retweet._jason)
                     logger.info(f"We found {len(first_100_retweets)}/{tweet['retweet_count']} retweets")
 
                     all_collected_info = {"original_tweet": tweet,
