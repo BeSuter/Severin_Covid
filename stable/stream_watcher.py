@@ -186,7 +186,6 @@ def crawl(auth, crawl_type, top_limit=-1):
         except Exception as e:
             logger.critical(f"[crawler] :: Error occured - {e}")
             logger.info("[crawler] :: Continuing...")
-            capture_exception(e)
             continue
 
 
