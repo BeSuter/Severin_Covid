@@ -69,7 +69,7 @@ def save_new_tweets_to_db(tweet_data, api):
                 retweeted_status = True
             except TypeError:
                 retweeted_status = False
-            if tweet["in_reply_to_status_id_str"] != "null" or \
+            if tweet["in_reply_to_status_id_str"] or \
                 tweet["is_quote_status"] or \
                 retweeted_status:
                 logger.info("Passing")
