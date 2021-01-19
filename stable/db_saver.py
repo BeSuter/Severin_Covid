@@ -1,4 +1,3 @@
-import datetime
 import logging
 import uuid
 import pickle
@@ -10,6 +9,7 @@ import pandas as pd
 from tweepy import OAuthHandler
 from tweepy import Cursor
 from tweepy import API
+from datetime import datetime
 
 import util
 
