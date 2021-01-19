@@ -88,13 +88,16 @@ def save_new_tweets_to_db(tweet_data, api):
                 if time_delta.total_seconds() >= timedelta(days=0.5).total_seconds():
                     logger.info(f"Looking at tweet_id={tweet['id']}: ")
                     all_replies = []
-                    for replie in Cursor(api.search,
-                                        q="to:" + tweet["user"]["screen_name"],
-                                        since_id=tweet["id"],
-                                        timeout=999999).items(1000):
-                        if hasattr(replie, "in_reply_to_status_id"):
-                            if (replie.in_reply_to_status_id == tweet["id"]):
-                                all_replies.append(replie._json)
+                    try:
+                        for replie in Cursor(api.search,
+                                            q="to:" + tweet["user"]["screen_name"],
+                                            since_id=tweet["id"],
+                                            timeout=999999).items(1000):
+                            if hasattr(replie, "in_reply_to_status_id"):
+                                if (replie.in_reply_to_status_id == tweet["id"]):
+                                    all_replies.append(replie._json)
+                    except TweepError as e:
+                        logger.warning(f"During collection of replies we encountered TweepyError {e} ignoring")
                     logger.info(f"We found {len(all_replies)} replies")
                     first_100_retweets = []
                     try:
@@ -102,7 +105,7 @@ def save_new_tweets_to_db(tweet_data, api):
                         for retweet in retweets:
                             first_100_retweets.append(retweet._json)
                     except TweepError as e:
-                        logger.warning(f"TweepyError {e} ignoring")
+                        logger.warning(f"During collection of retweets we encountered TweepyError {e} ignoring")
                     logger.info(f"We found {len(first_100_retweets)} retweets")
 
                     all_collected_info = {"original_tweet": tweet,
