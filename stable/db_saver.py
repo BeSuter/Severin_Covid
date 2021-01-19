@@ -105,6 +105,7 @@ def save_new_tweets_to_db(tweet_data, api):
                     tweet_collection = util.get_db_collection(f"{topic}_tweets")
                     tweet_collection.insert_one(all_collected_info)
                 else:
+                    logger.info("Tweet did not full fill time condition")
                     remaining_tweets.append(tweet)
 
         logger.info("[crawler.StdOutListener] :: Saving remaining tweets")
