@@ -85,7 +85,7 @@ def save_new_tweets_to_db(tweet_data, api):
                 datetime_creation = datetime.strptime(time_of_creation,
                                                       '%a %b %d %H:%M:%S +0000 %Y').replace(tzinfo=pytz.UTC)
                 time_delta = datetime.now().replace(tzinfo=pytz.UTC) - datetime_creation
-                if time_delta.total_seconds() >= timedelta(days=0.5).total_seconds():
+                if time_delta.total_seconds() >= timedelta(days=5).total_seconds():
                     logger.info(f"Looking at tweet_id={tweet['id']}: ")
                     all_replies = []
                     try:
