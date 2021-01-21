@@ -16,7 +16,7 @@ from datetime import timedelta
 import util
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
+logger.setLevel(logging.DEBUG)
 
 handler = logging.StreamHandler(sys.stdout)
 formatter = logging.Formatter(
