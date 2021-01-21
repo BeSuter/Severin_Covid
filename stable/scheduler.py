@@ -7,7 +7,7 @@ import db_saver
 
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.INFO)
 
 handler = logging.StreamHandler(sys.stdout)
 formatter = logging.Formatter(
@@ -22,7 +22,7 @@ def db_job(topic):
         start_time = time.time()
         db_saver.periodic_db_save([topic])
         end_time = time.time()
-        remaining_time = 900 - (end_time - start_time)
+        remaining_time = 1200 - (end_time - start_time)
         if remaining_time > 0:
             logger.info(f"Sleeping for {remaining_time/60.} min")
             time.sleep(remaining_time)

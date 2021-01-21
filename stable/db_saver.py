@@ -16,7 +16,7 @@ from datetime import timedelta
 import util
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.INFO)
 
 handler = logging.StreamHandler(sys.stdout)
 formatter = logging.Formatter(
@@ -122,14 +122,14 @@ def save_new_tweets_to_db(tweet_data, api):
                                           "replies": all_replies,
                                           "retweets": first_100_retweets,
                                           "insertion_date": datetime.utcnow()}
-                    logger.debug(f"Writing to collection {topic}_tweets_test")
-                    tweet_collection = util.get_db_collection(f"{topic}_tweets_test")
+                    logger.debug(f"Writing to collection {topic}_tweets")
+                    tweet_collection = util.get_db_collection(f"{topic}_tweets")
                     tweet_collection.insert_one(all_collected_info)
                 else:
                     logger.info("Tweet did not full fill time condition")
                     remaining_tweets.append(tweet)
 
-        logger.info("[crawler.StdOutListener] :: Saving remaining tweets")
+        logger.info("Saving remaining tweets not satisfying time condition.")
         outpath = f"./snapshots/{topic}/"
         os.makedirs(outpath, exist_ok=True)
         dumpfile = f"{outpath}/remaining_tweets_{uuid.uuid4().hex}.p"
@@ -152,7 +152,7 @@ def cleanup_snapshot_files(tweet_data):
 @util.timing
 def periodic_db_save(topic_list=None):
     """
-    Function that should be called regularly to store the tweets to the database and to download referenced articles
+    Function that should be called regularly to store the tweets to the database and to download retweets and replies
 
     :param topic_list: list of topics that tweets are collected for and that should be saved to the database
     :return: None
@@ -167,7 +167,7 @@ def periodic_db_save(topic_list=None):
     tweet_data = process_new_tweets(topic_list)
     save_new_tweets_to_db(tweet_data, api)
 
-    #cleanup_snapshot_files(tweet_data)
+    cleanup_snapshot_files(tweet_data)
 
 
 if __name__ == "__main__":
