@@ -16,7 +16,7 @@ from datetime import timedelta
 import util
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.INFO)
 
 handler = logging.StreamHandler(sys.stdout)
 formatter = logging.Formatter(
@@ -64,10 +64,10 @@ def save_new_tweets_to_db(tweet_data, api):
         for tweet in tweets["df"].to_dict("records"):
 
             # Ugly way of testing if is retweet... make better
-            logger.info("\nNew Tweet: ")
+            logger.debug("\nNew Tweet: ")
             try:
                 tweet["retweeted_status"]["id"]
-                logger.info(f"Retweeted_Statud Id is {tweet['retweeted_status']['id']}")
+                logger.debug(f"Retweeted_Statud Id is {tweet['retweeted_status']['id']}")
                 retweeted_status = True
             except TypeError:
                 retweeted_status = False
@@ -97,18 +97,28 @@ def save_new_tweets_to_db(tweet_data, api):
                                 if (replie.in_reply_to_status_id == tweet["id"]):
                                     all_replies.append(replie._json)
                     except TweepError as e:
-                        logger.warning(f"During collection of replies we encountered TweepyError {e} ignoring")
-                    logger.info(f"We found {len(all_replies)} replies")
+                        logger.warning(f"During collection of replies we encountered TweepyError {e}, ignoring...")
+                    logger.info(f"Found {len(all_replies)} replies")
                     first_100_retweets = []
                     try:
                         retweets = api.retweets(tweet["id"])
                         for retweet in retweets:
                             first_100_retweets.append(retweet._json)
                     except TweepError as e:
-                        logger.warning(f"During collection of retweets we encountered TweepyError {e} ignoring")
+                        logger.warning(f"During collection of retweets we encountered TweepyError {e}, ignoring...")
                     logger.info(f"We found {len(first_100_retweets)} retweets")
 
-                    all_collected_info = {"original_tweet": tweet,
+                    logger.debug(f"Updating original_tweet")
+                    try:
+                        updated_tweet = api.get_status(tweet["id"])._json
+                        logger.debug(f"Updatet tweet is: ")
+                        logger.debug(updated_tweet)
+                    except TweepError as e:
+                        logger.warning(f"During updating of original_tweet we encountered TweepyError {e}, ignoring...")
+                        logger.debug("Continuing with old original tweet")
+                        updated_tweet = tweet
+
+                    all_collected_info = {"original_tweet": updated_tweet,
                                           "replies": all_replies,
                                           "retweets": first_100_retweets,
                                           "insertion_date": datetime.utcnow()}
