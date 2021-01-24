@@ -67,7 +67,7 @@ def save_new_tweets_to_db(tweet_data, api):
             logger.debug("\nNew Tweet: ")
             try:
                 tweet["retweeted_status"]["id"]
-                logger.debug(f"Retweeted_Statud Id is {tweet['retweeted_status']['id']}")
+                logger.debug(f"Retweeted_Status Id is {tweet['retweeted_status']['id']}")
                 retweeted_status = True
             except TypeError:
                 retweeted_status = False
@@ -126,19 +126,31 @@ def save_new_tweets_to_db(tweet_data, api):
                     tweet_collection = util.get_db_collection(f"{topic}_tweets")
                     tweet_collection.insert_one(all_collected_info)
                 else:
-                    logger.info("Tweet did not full fill time condition")
+                    logger.debug("Tweet did not full fill time condition")
                     remaining_tweets.append(tweet)
+                    if len(remaining_tweets) >= 20:
+                        logger.info("Saving remaining tweets not satisfying time condition.")
+                        outpath = f"./snapshots/{topic}/"
+                        os.makedirs(outpath, exist_ok=True)
+                        dumpfile = f"{outpath}/remaining_tweets_{uuid.uuid4().hex}.p"
+                        with open(dumpfile, "wb") as output_file:
+                            pickle.dump(
+                                remaining_tweets,
+                                output_file,
+                            )
+                        remaining_tweets.clear()
 
-        logger.info("Saving remaining tweets not satisfying time condition.")
-        outpath = f"./snapshots/{topic}/"
-        os.makedirs(outpath, exist_ok=True)
-        dumpfile = f"{outpath}/remaining_tweets_{uuid.uuid4().hex}.p"
-        with open(dumpfile, "wb") as output_file:
-            pickle.dump(
-                remaining_tweets,
-                output_file,
-            )
-        remaining_tweets.clear()
+        if len(remaining_tweets) > 0:
+            logger.info("Saving remaining tweets not satisfying time condition.")
+            outpath = f"./snapshots/{topic}/"
+            os.makedirs(outpath, exist_ok=True)
+            dumpfile = f"{outpath}/remaining_tweets_{uuid.uuid4().hex}.p"
+            with open(dumpfile, "wb") as output_file:
+                pickle.dump(
+                    remaining_tweets,
+                    output_file,
+                )
+            remaining_tweets.clear()
 
 
 def cleanup_snapshot_files(tweet_data):
