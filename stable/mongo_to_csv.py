@@ -24,7 +24,7 @@ def csv_exporter(topic, query={}, no_id=True):
 
     if no_id:
         del df['_id']
-    df.to_csv(f"./TweetData_date={date}_noID={no_id}.csv")
+    df.to_csv(f"./TweetData_date={date}_noID={no_id}.csv", index=False)
 
 
 if __name__ == "__main__":
