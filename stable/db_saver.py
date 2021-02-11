@@ -102,7 +102,7 @@ def save_new_tweets_to_db(tweet_data, api):
                     logger.info(f"Found {len(all_replies)} replies")
                     first_100_retweets = []
                     try:
-                        retweets = api.retweets(tweet["id"])
+                        retweets = api.retweets(tweet["id"], tweet_mode='extended')
                         for retweet in retweets:
                             first_100_retweets.append(retweet._json)
                     except TweepError as e:
@@ -111,7 +111,7 @@ def save_new_tweets_to_db(tweet_data, api):
 
                     logger.debug(f"Updating original_tweet")
                     try:
-                        updated_tweet = api.get_status(tweet["id"])._json
+                        updated_tweet = api.get_status(tweet["id"], tweet_mode='extended')._json
                         logger.debug(f"Updatet tweet is: ")
                         logger.debug(updated_tweet)
                     except TweepError as e:
