@@ -92,6 +92,7 @@ def save_new_tweets_to_db(tweet_data, api):
                         for replie in Cursor(api.search,
                                             q="to:" + tweet["user"]["screen_name"],
                                             since_id=tweet["id"],
+                                            tweet_mode='extended',
                                             timeout=999999).items(1000):
                             if hasattr(replie, "in_reply_to_status_id"):
                                 if (replie.in_reply_to_status_id == tweet["id"]):
